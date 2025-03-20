@@ -32,12 +32,18 @@ public class JobService : IJobService
         var jobName = Console.ReadLine();
         var request = new { JobType = jobType, JobName = jobName };
         var response = await _httpClient.PostAsJsonAsync("/jobs", request, cancellationToken);
+
+
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
             return result.GetProperty("jobId").GetString();
         }
-        throw new Exception(await HttpUtils.HandleErrorResponse(response));
+        else
+        {
+            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            return null;
+        }
     }
 
     public async Task ListJobs(CancellationToken cancellationToken)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JobClient.Services
 {
-    internal interface IJobService
+    public interface IJobService
     {
         Task<string> CreateJob(CancellationToken cancellationToken);
         Task ListJobs(CancellationToken cancellationToken);
