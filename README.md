@@ -36,12 +36,12 @@ Ensure the backend runs at `http://localhost:5049`
 docker-compose up --build
 ```
 
-Then visit:
+Then:
 
-- Backend: [http://localhost:5049](http://localhost:5049)
-- React Console: [http://localhost:3000](http://localhost:3000)
+- Access the React Console UI at: [http://localhost:3000](http://localhost:3000)
+- The backend API will be running at: [http://localhost:5049](http://localhost:5049) (used internally by the client apps)
 
-> The CLI client should be run manually using `dotnet run` in development mode.
+> ⚠️ The `JobClient` (CLI) is **not included in Docker** and should be run manually using `dotnet run` from the `JobClient` folder.
 
 ## ✨ Features
 
