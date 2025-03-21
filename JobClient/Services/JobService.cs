@@ -90,7 +90,7 @@ public class JobService : IJobService
             var jobs = await response.Content.ReadFromJsonAsync<List<JsonElement>>(cancellationToken);
             if (jobs == null || jobs.Count == 0)
             {
-                Console.WriteLine($"No jobs of type {jobType} found.");
+                Log.Warning($"No jobs of type {jobType} found.");
                 return;
             }
             foreach (var job in jobs)
@@ -114,9 +114,9 @@ public class JobService : IJobService
         if (response.IsSuccessStatusCode)
         {
             var stats = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
-            Console.WriteLine($"Total Jobs: {stats.GetProperty("totalJobs").GetInt32()}");
-            Console.WriteLine($"Active Jobs: {stats.GetProperty("activeJobs").GetInt32()}");
-            Console.WriteLine("Jobs by Type:");
+            Log.Information($"Total Jobs: {stats.GetProperty("totalJobs").GetInt32()}");
+            Log.Information($"Active Jobs: {stats.GetProperty("activeJobs").GetInt32()}");
+            Log.Information("Jobs by Type:");
             foreach (var type in stats.GetProperty("jobsByType").EnumerateArray())
             {
                 Log.Information($"  Type: {type.GetProperty("jobType").GetString()}, Count: {type.GetProperty("count").GetInt32()}, Active: {type.GetProperty("active").GetInt32()}");
