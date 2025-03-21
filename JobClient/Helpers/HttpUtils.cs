@@ -16,7 +16,7 @@ namespace JobClient.Helpers
                 details = string.Join(", ", errorResponse.Details);
             }
 
-            return $"{errorResponse.Message} Error Code: {errorResponse.ErrorCode} Details: {details}";
+            return $"{errorResponse.Message} == Error Code: {errorResponse.ErrorCode} == Details: {details}";
         }
     }
 }

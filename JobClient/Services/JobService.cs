@@ -41,7 +41,7 @@ public class JobService : IJobService
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
             return null;
         }
     }
@@ -58,7 +58,7 @@ public class JobService : IJobService
             var jobs = await response.Content.ReadFromJsonAsync<List<JsonElement>>(cancellationToken);
             if (jobs == null || jobs.Count == 0)
             {
-                Console.WriteLine("No jobs found.");               
+                Log.Warning("No jobs found.");               
             }
             foreach (var job in jobs)
             {
@@ -66,12 +66,12 @@ public class JobService : IJobService
                 string jobType = job.GetProperty("jobType").GetString();
                 string jobName = job.GetProperty("jobName").GetString();
                 string status = job.GetProperty("status").GetString();
-                Console.WriteLine($"ID: {jobId}, Type: {jobType}, Name: {jobName}, Status: {status}");
+                Log.Information($"ID: {jobId}, Type: {jobType}, Name: {jobName}, Status: {status}");
             }
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 
@@ -119,12 +119,12 @@ public class JobService : IJobService
             Console.WriteLine("Jobs by Type:");
             foreach (var type in stats.GetProperty("jobsByType").EnumerateArray())
             {
-                Console.WriteLine($"  Type: {type.GetProperty("jobType").GetString()}, Count: {type.GetProperty("count").GetInt32()}, Active: {type.GetProperty("active").GetInt32()}");
+                Log.Information($"  Type: {type.GetProperty("jobType").GetString()}, Count: {type.GetProperty("count").GetInt32()}, Active: {type.GetProperty("active").GetInt32()}");
             }
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 
@@ -140,16 +140,16 @@ public class JobService : IJobService
             var jobs = await response.Content.ReadFromJsonAsync<List<JsonElement>>(cancellationToken);
             foreach (var job in jobs)
             {
-                Console.WriteLine($"ID: {job.GetProperty("jobId").GetString()}, Type: {job.GetProperty("jobType").GetString()}, Name: {job.GetProperty("jobName").GetString()}, Status: {job.GetProperty("status").GetString()}");
+                Log.Information($"ID: {job.GetProperty("jobId").GetString()}, Type: {job.GetProperty("jobType").GetString()}, Name: {job.GetProperty("jobName").GetString()}, Status: {job.GetProperty("status").GetString()}");
             }
             if (jobs.Count == 0)
             {
-                Console.WriteLine("No active jobs found.");
+                Log.Warning("No active jobs found.");
             }
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 
@@ -165,11 +165,11 @@ public class JobService : IJobService
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
-            Console.WriteLine($"Job {jobId}: {result.GetProperty("message").GetString()}");
+            Log.Information($"Job {jobId}: {result.GetProperty("message").GetString()}");
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 
@@ -185,11 +185,11 @@ public class JobService : IJobService
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
-            Console.WriteLine($"{result.GetProperty("message").GetString()} New ID: {result.GetProperty("jobId").GetString()}");
+            Log.Information($"{result.GetProperty("message").GetString()} New ID: {result.GetProperty("jobId").GetString()}");
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 
@@ -205,11 +205,11 @@ public class JobService : IJobService
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
-            Console.WriteLine($"Job {jobId}: {result.GetProperty("message").GetString()}");
+            Log.Information($"Job {jobId}: {result.GetProperty("message").GetString()}");
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 
@@ -225,11 +225,11 @@ public class JobService : IJobService
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
-            Console.WriteLine($"{result.GetProperty("message").GetString()}");
+            Log.Information($"{result.GetProperty("message").GetString()}");
         }
         else
         {
-            Console.WriteLine(await HttpUtils.HandleErrorResponse(response));
+            Log.Error(await HttpUtils.HandleErrorResponse(response));
         }
     }
 }

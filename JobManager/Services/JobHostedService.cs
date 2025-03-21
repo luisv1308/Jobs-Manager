@@ -12,11 +12,13 @@ namespace JobManager.Services
     {
         private readonly ConcurrentDictionary<string, Job> _jobs;
         private readonly IHubContext<JobHub> _hubContext;
+        private readonly ILogger<JobHostedService> _logger;
 
-        public JobHostedService(ConcurrentDictionary<string, Job> jobs, IHubContext<JobHub> hubContext)
+        public JobHostedService(ConcurrentDictionary<string, Job> jobs, IHubContext<JobHub> hubContext, ILogger<JobHostedService> logger)
         {
             _jobs = jobs;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         public async Task StartJob(string jobId, string jobType, string jobName, CancellationTokenSource cts)
@@ -29,7 +31,7 @@ namespace JobManager.Services
                 }
                 catch (TaskCanceledException)
                 {
-                    Console.WriteLine($"Job {jobId} was canceled");
+                    _logger.LogInformation($"Job {jobId} was canceled");
                 }
                 finally
                 {
@@ -41,10 +43,21 @@ namespace JobManager.Services
                 }
             }, cts.Token);
 
-            var job = new Job(jobId, jobType, jobName, task, cts);
-            _jobs.TryAdd(jobId, job);
-            await NotifyJobUpdate(job);
+            // Update existing job instead of re-adding
+            if (_jobs.ContainsKey(jobId))
+            {
+                var existingJob = _jobs[jobId];
+                _jobs[jobId] = existingJob with { Task = task, Cts = cts, IsRunning = true };
+            }
+            else
+            {
+                var newJob = new Job(jobId, jobType, jobName, task, cts);
+                _jobs.TryAdd(jobId, newJob);
+            }
+
+            await NotifyJobUpdate(_jobs[jobId]);
         }
+
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

@@ -60,16 +60,23 @@ namespace JobManager.Endpoints
 
         public async Task<string> RestartJob(string jobId)
         {
-            if (!_jobs.TryGetValue(jobId, out var oldJob))
+            if (!_jobs.TryGetValue(jobId, out var job))
                 throw new KeyNotFoundException($"Job {jobId} not found");
-            if (oldJob.IsRunning)
+
+            if (job.IsRunning)
                 throw new InvalidOperationException($"Job {jobId} is still running");
 
-            var newJobId = Guid.NewGuid().ToString();
+            // Replace the cancellation token
             var cts = new CancellationTokenSource();
-            _logger.LogInformation("Restarting job {OldJobId} as {NewJobId}", jobId, newJobId);
-            await _jobHostedService.StartJob(newJobId, oldJob.JobType, oldJob.JobName, cts);
-            return newJobId;
+            _logger.LogInformation("Restarting job {JobId}", jobId);
+
+            // Update job object with a fresh cancellation token
+            var updatedJob = job with { Cts = cts, IsRunning = true };
+            _jobs[jobId] = updatedJob;
+
+            // Restart the same job
+            await _jobHostedService.StartJob(jobId, job.JobType, job.JobName, cts);
+            return jobId;
         }
 
         public async Task DeleteJob(string jobId)
