@@ -84,7 +84,7 @@ namespace JobManager.Endpoints
                 });
             });
 
-            // POST Endpoints (sin try-catch)
+            // POST Endpoints
             app.MapPost("/jobs", async (JobRequest request) =>
             {
                 var jobId = await jobService.CreateJob(request);
@@ -103,7 +103,7 @@ namespace JobManager.Endpoints
                 return Results.Ok(new { JobId = newJobId, Message = "Job restarted" });
             });
 
-            // DELETE Endpoints (sin try-catch)
+            // DELETE Endpoints
             app.MapDelete("/jobs/{jobId}", async (string jobId) =>
             {
                 await jobService.DeleteJob(jobId);

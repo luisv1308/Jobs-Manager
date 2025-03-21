@@ -1,0 +1,25 @@
+services:
+  jobmanager:
+    build:
+      context: .
+      dockerfile: JobManager/Dockerfile
+    ports:
+      - "5049:5049"
+    networks:
+      - appnet
+
+  jobconsole:
+    build:
+      context: ./job-console
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5049
+    ports:
+      - "3000:80"
+    depends_on:
+      - jobmanager
+    networks:
+      - appnet
+
+networks:
+  appnet:
