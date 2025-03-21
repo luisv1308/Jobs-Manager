@@ -1,4 +1,5 @@
-﻿using JobClient;
+﻿using DotNetEnv;
+using JobClient;
 using JobClient.Configs;
 using JobClient.Helpers;
 using JobClient.Models;
@@ -32,11 +33,15 @@ class Program
 
     private static void ConfigureServices()
     {
+        Env.Load();
+
         LoggingConfig.ConfigureLogging();
 
         var services = new ServiceCollection();
 
-        services.AddSingleton<HttpClient>(new HttpClient { BaseAddress = new Uri("http://localhost:5049") });
+        var apiUrl = Env.GetString("API_URL", "http://localhost:5049");
+
+        services.AddSingleton<HttpClient>(new HttpClient { BaseAddress = new Uri(apiUrl) });
         services.AddSingleton<IJobService, JobService>();
         services.AddSingleton<IJobHubService, JobHubService>();
         services.AddSingleton<MenuService>();

@@ -1,4 +1,5 @@
-﻿using JobClient.Models;
+﻿using DotNetEnv;
+using JobClient.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Serilog;
 using System;
@@ -14,8 +15,12 @@ namespace JobClient.Services
 
         public JobHubService()
         {
+            // Cargar la URL base desde .env y construir la URL del hub
+            var apiUrl = Env.GetString("API_URL", "http://localhost:5049");
+            var hubUrl = $"{apiUrl}/jobHub";
+
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5049/jobHub")
+                .WithUrl(hubUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
