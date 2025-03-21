@@ -27,7 +27,7 @@ namespace JobManager.Services
             {
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(15), cts.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(45), cts.Token);
                 }
                 catch (TaskCanceledException)
                 {

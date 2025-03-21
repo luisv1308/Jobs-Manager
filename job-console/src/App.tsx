@@ -48,7 +48,12 @@ function App() {
       });
       if (!response.ok) {
         const error = await response.json();
-        alert(`Error: ${error.message || error.details?.join(', ')}`);
+        let details = '';
+        if (error.Details) {
+          details = error.Details.join(', ');
+        }
+        console.log(details)
+        alert(`Error: ${error.Message || details}`);
         return;
       }
       const result = await response.json();
